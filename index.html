@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sling Stones — indie dApp studio building on Solana.">
+  <meta property="og:title" content="Sling Stones">
+  <meta property="og:description" content="Keep Slinging Stones.">
+  <meta name="theme-color" content="#F7F4FF">
+  <title>Sling Stones</title>
+
+  <!-- Space Grotesk — geometric sans with distinctive web3 character -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+
+    /* ─── Reset ─────────────────────────────────────────── */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ─── Design Tokens ──────────────────────────────────
+       Light off-white theme, Solana-tinted.
+       To retheme: edit these values only.                 */
+    :root {
+      --card:    #FFFFFF;
+      --text:    #1C1830;
+      --muted:   #9390A8;
+      --dim:     #6E6A80;
+      --green:   #0CBF7A;
+      --purple:  #7C3AED;
+      --grad:    linear-gradient(135deg, #7C3AED, #0CBF7A);
+      --radius:  14px;
+      --ease:    0.3s ease;
+    }
+
+    /* ─── Base ───────────────────────────────────────────── */
+    html, body { height: 100%; }
+
+    body {
+      /* Off-white gradient: faint purple tint → faint green tint */
+      background: linear-gradient(145deg, #F3EEFF 0%, #E8F9F2 100%);
+      background-attachment: fixed;
+      color: var(--text);
+      font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ─── Layout ─────────────────────────────────────────── */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3.5rem 1.5rem;
+      gap: 3rem;
+      text-align: center;
+    }
+
+    /* ─── Identity ───────────────────────────────────────── */
+    .identity {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    h1 {
+      font-size: clamp(2.8rem, 10vw, 5.5rem);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1.1;         /* was 1 — gives descenders room */
+      padding-bottom: 0.06em;   /* prevents gradient clip cutting 'g' descender */
+      background: var(--grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .tagline {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ─── Tiles ───────────────────────────────────────────────
+       To add a 3rd tile later:
+         1. Copy one <a class="tile"> block and update its content
+         2. Change max-width on .tiles from 640px → 960px          */
+    .tiles {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+      width: 100%;
+      max-width: 640px;
+    }
+
+    .tile {
+      display: block;
+      text-align: center;
+      padding: 1.75rem;
+      border-radius: var(--radius);
+      border: 1px solid transparent;
+      /* Gradient border: dim at rest, vivid on hover */
+      background:
+        linear-gradient(white, white) padding-box,
+        linear-gradient(135deg, rgba(124,58,237,0.2), rgba(12,191,122,0.2)) border-box;
+      box-shadow: 0 2px 16px rgba(124, 58, 237, 0.07);
+      color: var(--text);
+      text-decoration: none;
+      transition:
+        background var(--ease),
+        box-shadow var(--ease),
+        transform 0.2s ease;
+    }
+
+    .tile:hover {
+      background:
+        linear-gradient(white, white) padding-box,
+        var(--grad) border-box;
+      box-shadow:
+        0 8px 32px rgba(124, 58, 237, 0.14),
+        0 8px 64px rgba(12, 191, 122, 0.08);
+      transform: translateY(-3px);
+    }
+
+    .tile:focus-visible {
+      outline: 2px solid var(--purple);
+      outline-offset: 4px;
+    }
+
+    /* ─── Tile icon ──────────────────────────────────────── */
+    .tile-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      display: block;
+      margin: 0 auto 1rem;
+      transition: transform 0.3s ease;
+    }
+
+    .tile:hover .tile-icon {
+      transform: scale(1.06);
+    }
+
+    .tile-name {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: var(--grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.3rem;
+    }
+
+    .tile-tag {
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* Smooth content reveal — pure CSS, no JS.
+       grid-template-rows: 0fr → 1fr is the smoothest height animation. */
+    .tile-body {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .tile:hover .tile-body,
+    .tile:focus-visible .tile-body {
+      grid-template-rows: 1fr;
+    }
+
+    .tile-body-inner {
+      overflow: hidden;
+    }
+
+    .tile-desc {
+      padding-top: 1rem;
+      font-size: 0.875rem;
+      line-height: 1.7;
+      color: var(--dim);
+    }
+
+    .tile-link {
+      display: inline-block;
+      margin-top: 0.85rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--purple);
+      letter-spacing: 0.05em;
+      opacity: 0;
+      transition: opacity 0.25s ease 0.15s;
+    }
+
+    .tile:hover .tile-link,
+    .tile:focus-visible .tile-link {
+      opacity: 1;
+    }
+
+    /* Touch/mobile: always show content */
+    @media (hover: none) {
+      .tile-body { grid-template-rows: 1fr; }
+      .tile-link  { opacity: 1; }
+      .tiles      { max-width: 400px; }
+    }
+
+    /* ─── Pull Quote ─────────────────────────────────────── */
+    .pullquote {
+      font-size: 0.82rem;
+      font-style: italic;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+    }
+
+    /* ─── Footer ─────────────────────────────────────────── */
+    footer {
+      padding: 1.25rem 2rem;
+      text-align: center;
+      border-top: 1px solid rgba(124, 58, 237, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .footer-contact a {
+      font-size: 0.7rem;
+      color: #AAAABB;
+      text-decoration: none;
+      transition: color var(--ease);
+    }
+
+    .footer-contact a:hover {
+      color: var(--purple);
+    }
+
+    /* Uncomment and fill in when you have a legal entity:
+    .footer-entity {
+      font-size: 0.65rem;
+      color: #BBBACA;
+    }
+    */
+
+    .footer-copy {
+      font-size: 0.7rem;
+      color: #BBBACA;
+    }
+
+    /* ─── Reduced motion ─────────────────────────────────── */
+    @media (prefers-reduced-motion: reduce) {
+      .tile, .tile-body, .tile-link, .tile-icon { transition: none; }
+      .tile:hover .tile-body { grid-template-rows: 1fr; }
+      .tile:hover .tile-link { opacity: 1; }
+    }
+
+  </style>
+</head>
+<body>
+
+  <main>
+
+    <!-- Studio identity -->
+    <header class="identity">
+      <h1>Sling Stones</h1>
+      <p class="tagline">Keep Slinging</p>
+    </header>
+
+    <!-- dApp tiles                                                       -->
+    <!-- To add a tile: copy one <a class="tile"> block, update its      -->
+    <!-- content, then change max-width on .tiles from 640px to 960px    -->
+    <div class="tiles">
+
+      <a class="tile"
+         href="https://rentrolly.com"
+         target="_blank"
+         rel="noopener noreferrer">
+        <img class="tile-icon" src="assets/rentrolly-icon.png" alt="RentRolly app icon">
+        <div class="tile-name">RentRolly</div>
+        <div class="tile-tag">Real Estate · Solana</div>
+        <div class="tile-body">
+          <div class="tile-body-inner">
+            <p class="tile-desc">
+              Track your real estate portfolio on the go. DSCR, cash flow, equity,
+              and occupancy — all in one mobile-first dApp built for real estate investors.
+            </p>
+            <span class="tile-link">rentrolly.com →</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="tile"
+         href="https://omenfi.com"
+         target="_blank"
+         rel="noopener noreferrer">
+        <img class="tile-icon" src="assets/omenfi-icon.png" alt="OmenFi app icon">
+        <div class="tile-name">OmenFi</div>
+        <div class="tile-tag">Crypto Analytics · Solana</div>
+        <div class="tile-body">
+          <div class="tile-body-inner">
+            <p class="tile-desc">
+              Reveals the best times to buy crypto using real historical data. See which
+              months and weeks have been strong or weak for BTC, ETH, SOL, XRP and more.
+              Run DCA backtests, track your buys, and stack smarter — not harder.
+              Free for Bitcoin. Unlock more assets with SOL.
+            </p>
+            <span class="tile-link">omenfi.com →</span>
+          </div>
+        </div>
+      </a>
+
+    </div>
+
+    <!-- Pull quote -->
+    <p class="pullquote">Five Stones. One Giant.</p>
+
+  </main>
+
+  <footer>
+    <div class="footer-contact">
+      <a href="mailto:rentrollyapp@gmail.com">rentrollyapp@gmail.com</a>
+    </div>
+    <!-- Uncomment and fill in when you have a legal entity:
+    <div class="footer-entity">Operated by [Your Legal Entity Name]</div>
+    -->
+    <div class="footer-copy">© 2026 Sling Stones</div>
+  </footer>
+
+</body>
+</html>
